@@ -31,6 +31,12 @@ I made Clapi because I was wasting my energy and my time parsing user inputs in 
   - double-quote delimited string literal (ex: `"hello world"`)
   - a space delimited alphanumerical word
   - a space delimited hexadecimal sequence (ex: `89504E47`)
+- All tests have passed.
+
+### Structure
+- /auto: automation scripts (module management, compiling and executing tests)
+- /src: source code
+- /test: test code
   
 ### Usage
 
