@@ -50,10 +50,6 @@ I made Clapi because I was wasting my energy and my time parsing user inputs in 
 
 See [/test/cli/cli.c](/test/cli/cli.c). 
 
-#### Route buffer
-
-When the program starts, a pre-allocated buffer must be set to register routes
-
 ### Objects
 #### cli_param_t
 - A polymorphic object (union) that can hold a signed long integer, a double-precision float, or a pointer and the length in bytes of pointer region. 
