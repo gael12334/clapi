@@ -1,5 +1,4 @@
 *.bin
 *.o
 *.elf
-*.txt
 out
