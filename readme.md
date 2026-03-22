@@ -18,8 +18,16 @@ Should you use this project, you are fully responsible and accountable for any l
 
 ## Clapi
 
-Clapi, or Command Line Application Programming Interface, is a framework that binds a chain of identifiers and wildcards to a function pointer, similar to REST APIs used in web development frameworks like Express. 
+Clapi, or Command Line Application Programming Interface, is a framework that binds a chain of identifiers and wildcards to a function pointer, 
+similar to REST APIs used in web development frameworks like Express. 
 I made Clapi because I was wasting my energy and my time parsing user inputs in a ugly, highly coupled way, every time I was doing a terminal-based app. 
+
+
+### Definitions
+
+- Route: a path of execution
+- Identifier: a list of predefined word that uniquely identify a route. 
+- Wildcard: a route can have wildcard identifier to have variable tokens of a specific type.
 
 ### Features
 
@@ -41,6 +49,10 @@ I made Clapi because I was wasting my energy and my time parsing user inputs in 
 ### Usage
 
 See [/test/cli/cli.c](/test/cli/cli.c). 
+
+#### Route buffer
+
+When the program starts, a pre-allocated buffer must be set to register routes
 
 ### Objects
 #### cli_param_t
