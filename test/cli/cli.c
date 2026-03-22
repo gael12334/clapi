@@ -268,7 +268,7 @@ void test_cli_parsehex(void) {
 
   // act
   cli_param_t param;
-  cli_error_t error = cli_parsewrd(token, &param);
+  cli_error_t error = cli_parsehex(token, &param);
 
   // assert
   testing(test_StrEqStr(__func__, sexpr(error), sexpr(NULL)));
