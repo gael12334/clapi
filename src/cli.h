@@ -62,7 +62,7 @@ typedef struct cli_toklst {
 } cli_toklst_t;
 
 typedef struct cli_route {
-  const char** id_list;
+  cli_idlist_t id_list;
   unsigned long id_nmbr;
   unsigned long param_cnt;
   cli_func_t func;

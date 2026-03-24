@@ -231,12 +231,11 @@ cli_error_t cli_addrte_s(cli_idlist_t id_list, ulong id_num, cli_func_t func) {
     prmcnt += isparam;
   }
 
-  cli.rte.buf[*rtecnt] = (cli_route_t){
-      .id_list = id_list,
-      .id_nmbr = id_num,
-      .param_cnt = prmcnt,
-      .func = func,
-  };
+  cli_route_t* rte = &cli.rte.buf[*rtecnt];
+  memcpy(rte->id_list, id_list, sizeof(*id_list) * id_num);
+  rte->func = func;
+  rte->id_nmbr = id_num;
+  rte->param_cnt = prmcnt;
 
   (*rtecnt)++;
   return NULL;

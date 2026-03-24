@@ -51,6 +51,10 @@ I made Clapi because I was wasting my energy and my time parsing user inputs in 
 See [/test/cli/cli.c](/test/cli/cli.c). 
 
 ### Objects
+
+#### cli_idlist_t
+- An alias for an array of 128 strings
+
 #### cli_param_t
 - A polymorphic object (union) that can hold a signed long integer, a double-precision float, or a pointer and the length in bytes of pointer region. 
 
@@ -132,4 +136,3 @@ See [/test/cli/cli.c](/test/cli/cli.c).
 - Returns: an unsigned long integer.
 - No parameters.
 
-- 
