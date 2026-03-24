@@ -10,9 +10,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define CLI_INPUT_SIZE 256
-#define CLI_TOKEN_NMBR (CLI_INPUT_SIZE >> 1)
-
 typedef cli_error_t (*cli_parser_t)(const char*, cli_param_t*);
 typedef unsigned long ulong;
 
@@ -23,29 +20,29 @@ const char CLI_WORD_ARG[] = "\x04\x00\x00\x00"; // ALPHANUMERICAL SEQUENCE OF CH
 const char CLI_HEX_ARG[] = "\x05\x00\x00\x00";  // SEQUENCE OF HEXADECIMAL NUMBERS
 
 const char CLI_EIDLISTNULL[] = "Id list was NULL.";
-const char CLI_EFUNCNULL[] = "Function was NULL";
-const char CLI_EROUTE_NULL[] = "Route was NULL.";
-const char CLI_ENUMBERNULL[] = "The id list length was NULL.";
 const char CLI_EIDLSTVALID[] = "Id list must be NULL.";
-const char CLI_ENMBRVALID[] = "Id list length must be NULL.";
+const char CLI_EIDWASDIFF[] = "Id was diffrent than expected.";
+const char CLI_EIDLISTCNT[] = "The number of identifiers must be below 128.";
+const char CLI_EIDNOTFND[] = "Absence of route assigned to specified id.";
+const char CLI_ENULLNMBR[] = "The id list length was NULL.";
+const char CLI_ENULLFUNC[] = "Function was NULL";
+const char CLI_ENULLINPUT[] = "Input buffer was NULL.";
+const char CLI_ENULLPARAM[] = "Parameter reference was NULL.";
+const char CLI_ENULLROUTE[] = "Route was NULL.";
+const char CLI_ENULLRTEBUF[] = "The module's route buffer is empty or NULL.";
+const char CLI_ENULLTKLST[] = "Token list was null.";
+const char CLI_ENULLALLOC[] = "Memory allocation has failed.";
 const char CLI_EBUFFERFULL[] = "The module's buffer is full.";
-const char CLI_EUNINITED[] = "The module's is uninitialized.";
-const char CLI_ERTEBUFVOID[] = "The module's route buffer is empty or NULL.";
-const char CLI_EMISSINGRTE[] = "Absence of route assigned to specified id.";
+const char CLI_ENOTREADY[] = "The module's is uninitialized.";
 const char CLI_EINVINTEGER[] = "Interger was invalid.";
 const char CLI_EINVREALNUM[] = "Real number was invalid.";
 const char CLI_EINVSTRLIT[] = "String literal was invalid.";
 const char CLI_EINV_WORD[] = "Word was invalid.";
 const char CLI_EINVHEXADEC[] = "Hexadecimal sequence was invalid";
-const char CLI_E2MANYPARAM[] = "Exceeded number of expected parameters.";
-const char CLI_EMALLOCNULL[] = "Memory allocation has failed.";
-const char CLI_EINPUTNULL[] = "Input buffer was NULL.";
-const char CLI_EINDEXINV[] = "Index is invalid.";
-const char CLI_EPARAMNULL[] = "Parameter reference was NULL.";
-const char CLI_EIDWASDIFF[] = "Id was diffrent than expected.";
+const char CLI_EINVINDEX[] = "Index is invalid.";
+const char CLI_EINVARGNMBR[] = "Exceeded number of expected parameters.";
 const char CLI_ESTRENDDQ[] = "Missing closing double quotes for string literal.";
 const char CLI_ESTRSEPCH[] = "Expected nul or blank char after closing double quotes.";
-const char CLI_ETOKLSTNUL[] = "Token list was null.";
 
 const static cli_parser_t parser[] = {
     [0] = NULL,         /**/
@@ -212,15 +209,17 @@ ulong cli_rtecount(void) {
   return cli.rte.cnt;
 }
 
-cli_error_t cli_addrte_s(const char* id_list[], ulong id_num, cli_func_t func) {
+cli_error_t cli_addrte_s(cli_idlist_t id_list, ulong id_num, cli_func_t func) {
   if (id_list == NULL)
     return CLI_EIDLISTNULL;
   if (func == NULL)
-    return CLI_EFUNCNULL;
+    return CLI_ENULLFUNC;
   if (cli.rte.buf == NULL)
-    return CLI_ERTEBUFVOID;
+    return CLI_ENULLRTEBUF;
   if (cli.rte.cnt >= cli.rte.num)
     return CLI_EBUFFERFULL;
+  if (id_num >= CLI_IDLIST_CNT)
+    return CLI_EIDLISTCNT;
 
   ulong* rtecnt = &cli.rte.cnt;
   ulong prmcnt = 0;
@@ -245,11 +244,11 @@ cli_error_t cli_addrte_s(const char* id_list[], ulong id_num, cli_func_t func) {
 
 cli_error_t cli_hasrte_s(cli_toklst_t* tokens, cli_route_t** out) {
   if (tokens == NULL)
-    return CLI_ETOKLSTNUL;
+    return CLI_ENULLTKLST;
   if (out == NULL)
-    return CLI_EROUTE_NULL;
+    return CLI_ENULLROUTE;
   if (cli.rte.buf == NULL)
-    return CLI_ERTEBUFVOID;
+    return CLI_ENULLRTEBUF;
 
   cli_error_t error;
   for (cli_route_t* route = cli.rte.buf; route < cli.rte.buf + cli.rte.cnt; route++) {
@@ -265,7 +264,7 @@ cli_error_t cli_hasrte_s(cli_toklst_t* tokens, cli_route_t** out) {
 
 cli_error_t cli_usrinput(FILE* stream, cli_toklst_t* out) {
   if (out == NULL)
-    return CLI_ETOKLSTNUL;
+    return CLI_ENULLTKLST;
 
   if (stream == NULL)
     stream = stdin;
@@ -338,9 +337,9 @@ cli_error_t cli_usrinput(FILE* stream, cli_toklst_t* out) {
 
 cli_error_t cli_getparam(ulong index, cli_param_t* param) {
   if (index >= cli.var.cnt)
-    return CLI_EINDEXINV;
+    return CLI_EINVINDEX;
   if (param == NULL)
-    return CLI_EPARAMNULL;
+    return CLI_ENULLPARAM;
 
   *param = cli.var.buf[index];
   return NULL;
@@ -348,12 +347,4 @@ cli_error_t cli_getparam(ulong index, cli_param_t* param) {
 
 unsigned long cli_paramcnt(void) {
   return cli.var.cnt;
-}
-
-unsigned long cli_dbgtoknb(void) {
-  return cli.tok.cnt;
-}
-
-const char** cli_dbgtokbf(void) {
-  return (const char**)cli.tok.buf;
 }

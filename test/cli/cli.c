@@ -49,7 +49,7 @@ void test_cli_addrte_s(void) {
   // arrange
   cli_route_t buffer[8];
   cli_func_t function = test_dummy_cli_function;
-  const char* id_list[] = {"test", "id", CLI_INT_ARG};
+  cli_idlist_t id_list = {"test", "id", CLI_INT_ARG};
   const unsigned long id_num = 3, param_cnt = 1;
 
   cli_setbuf_s(buffer, 8);
@@ -69,7 +69,7 @@ void test_cli_addrte_s(void) {
 void test_cli_addrte_s__buffer_null(void) {
   // arrange
   cli_func_t function = test_dummy_cli_function;
-  const char* id_list[] = {"test", "id", CLI_INT_ARG};
+  cli_idlist_t id_list = {"test", "id", CLI_INT_ARG};
   const unsigned long id_num = 3;
 
   cli_setbuf_s(NULL, 8); // invalid state
@@ -78,7 +78,7 @@ void test_cli_addrte_s__buffer_null(void) {
   cli_error_t error = cli_addrte_s(id_list, id_num, function);
 
   // assert
-  testing(test_IntEqInt(__func__, iexpr(error), iexpr(CLI_ERTEBUFVOID)));
+  testing(test_IntEqInt(__func__, iexpr(error), iexpr(CLI_ENULLRTEBUF)));
   test_passed(__func__);
 }
 
@@ -86,7 +86,7 @@ void test_cli_addrte_s__func_null(void) {
   // arrange
   cli_route_t buffer[8];
   cli_func_t function = NULL; // invalid state
-  const char* id_list[] = {"test", "id", CLI_INT_ARG};
+  cli_idlist_t id_list = {"test", "id", CLI_INT_ARG};
   const unsigned long id_num = 3;
 
   cli_setbuf_s(buffer, 8);
@@ -95,7 +95,7 @@ void test_cli_addrte_s__func_null(void) {
   cli_error_t error = cli_addrte_s(id_list, id_num, function);
 
   // assert
-  testing(test_IntEqInt(__func__, iexpr(error), iexpr(CLI_EFUNCNULL)));
+  testing(test_IntEqInt(__func__, iexpr(error), iexpr(CLI_ENULLFUNC)));
   test_passed(__func__);
 }
 
@@ -103,13 +103,12 @@ void test_cli_addrte_s__id_list_null(void) {
   // arrange
   cli_route_t buffer[8];
   cli_func_t function = test_dummy_cli_function;
-  const char** id_list = NULL; // invalid state
   const unsigned long id_num = 3;
 
   cli_setbuf_s(buffer, 8);
 
   // act
-  cli_error_t error = cli_addrte_s(id_list, id_num, function);
+  cli_error_t error = cli_addrte_s(NULL, id_num, function);
 
   // assert
   testing(test_IntEqInt(__func__, iexpr(error), iexpr(CLI_EIDLISTNULL)));
@@ -122,7 +121,7 @@ void test_cli_clearrte(void) {
   cli_setbuf_s(buffer, 8);
 
   cli_func_t function = test_dummy_cli_function;
-  const char* id_list[] = {"test", "id", CLI_INT_ARG};
+  cli_idlist_t id_list = {"test", "id", CLI_INT_ARG};
   const unsigned long id_num = 3;
 
   cli_setbuf_s(buffer, 8);
@@ -297,8 +296,8 @@ void test_cli_hasrte_s__int_arg(void) {
   cli_route_t buffer[8];
   cli_setbuf_s(buffer, 8);
 
-  const char* id_list[] = {"test", "id", CLI_INT_ARG};
-  const char* id_list2[] = {"test2", "id", CLI_INT_ARG};
+  cli_idlist_t id_list = {"test", "id", CLI_INT_ARG};
+  cli_idlist_t id_list2 = {"test2", "id", CLI_INT_ARG};
   cli_addrte_s(id_list, 3, test_dummy_cli_function);
   cli_addrte_s(id_list2, 3, test_dummy_cli_function2);
 
@@ -320,8 +319,8 @@ void test_cli_hasrte_s__no_match(void) {
   cli_route_t buffer[8];
   cli_setbuf_s(buffer, 8);
 
-  const char* id_list[] = {"test", "id", CLI_INT_ARG};
-  const char* id_list2[] = {"test2", "id", CLI_INT_ARG};
+  cli_idlist_t id_list = {"test", "id", CLI_INT_ARG};
+  cli_idlist_t id_list2 = {"test2", "id", CLI_INT_ARG};
   cli_addrte_s(id_list, 3, test_dummy_cli_function);
   cli_addrte_s(id_list2, 3, test_dummy_cli_function2);
 
@@ -428,7 +427,7 @@ void test_cli_success(void) {
   testing(test_UintEqUint(__func__, uexpr(prevbuffer), uexpr(NULL)));
 
   // add route
-  const char* routeids[] = {"test", CLI_INT_ARG};
+  cli_idlist_t routeids = {"test", CLI_INT_ARG};
   const ulong routeidsnum = 2;
   cli_error_t error = cli_addrte_s(routeids, routeidsnum, test_route_cli_success);
   testing(test_StrEqStr(__func__, sexpr(error), sexpr(NULL)));
