@@ -8,6 +8,25 @@
 #define CLI_INPUT_SIZE (256)
 #define CLI_IDLIST_CNT (CLI_INPUT_SIZE / 2)
 
+#define PATH(...)                                                                        \
+  { __VA_ARGS__ }
+
+#define ROUTE(name, path, code)                                                          \
+  void name(void* opt) {                                                                 \
+    {                                                                                    \
+      static int name##_set = 0;                                                         \
+      static cli_ident_t name##_id[CLI_IDLIST_CNT] = path;                               \
+      static unsigned long name##_n = sizeof(name##_id) / sizeof(name##_id[0]);          \
+      if (name##_set == 0) {                                                             \
+        *((cli_error_t*)opt) = cli_addrte_s(name##_id, name##_n, name);                  \
+        if (opt == NULL)                                                                 \
+          name##_set = 1;                                                                \
+        return;                                                                          \
+      }                                                                                  \
+    }                                                                                    \
+    code;                                                                                \
+  }
+
 extern const char CLI_INT_ARG[];
 extern const char CLI_REAL_ARG[];
 extern const char CLI_STR_ARG[];
